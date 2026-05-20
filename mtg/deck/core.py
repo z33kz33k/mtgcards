@@ -691,7 +691,8 @@ class Deck:
         sideboard = [
             companion, *sideboard] if companion and companion not in sideboard else sideboard
 
-        self._max_playset_count = 1 if commander is not None else 4
+        self._max_playset_count = 1 if (
+            commander is not None or self.format == "gladiator") else 4
         playsets = aggregate(*maindeck)
         for playset in playsets.values():
             self._validate_playset(playset)
