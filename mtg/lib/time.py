@@ -174,3 +174,8 @@ def datetime_from_unixtime(unixtime: int, divisor=1000) -> datetime:
     """
     return datetime.fromtimestamp(unixtime / divisor, UTC)
 
+
+def parse_date(text: str) -> date:
+    """Parse `datetime.date` object from text.
+    """
+    return dateutil.parser.parse(text.strip()).date()

@@ -357,7 +357,7 @@ class TcgPlayerAuthorSearchScraper(TcgPlayerPlayerScraper):
     @override
     def _fetch_json(self) -> Json:
         [author] = get_query_values(self.url, "author")
-        return fetch_json(self._API_URL_TEMPLATE.format(author))
+        self._json = fetch_json(self._API_URL_TEMPLATE.format(author))
 
 
 @DeckUrlsContainerScraper.registered

@@ -15,11 +15,11 @@ from requests import ReadTimeout
 
 from mtg.constants import Json
 from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper
-from mtg.lib.time import get_date_from_ago_text
 from mtg.lib.scrape.core import (
     ScrapingError, fetch_json, get_path_segments, normalize_url,
     strip_url_query,
 )
+from mtg.lib.time import get_date_from_ago_text
 
 _log = logging.getLogger(__name__)
 
@@ -133,7 +133,8 @@ class StreamdeckerUserScraper(DeckUrlsContainerScraper):
     @override
     def _fetch_json(self) -> Json:
         _, user_name = get_path_segments(self.url)
-        return fetch_json(f"https://www.streamdecker.com/api/userdecks/{user_name}")
+        api_url = f"https://www.streamdecker.com/api/userdecks/{user_name}"
+        self._json = fetch_json(api_url)
 
     @override
     def _validate_json(self) -> None:

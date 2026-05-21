@@ -24,7 +24,6 @@ from requests import ConnectionError, HTTPError, ReadTimeout, Timeout
 from tqdm import tqdm
 from youtube_comment_downloader import SORT_BY_POPULAR, YoutubeCommentDownloader
 
-from mtg import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper
 from mtg.constants import (
     CHANNELS_DIR, CHANNEL_URL_TEMPLATE, FILENAME_TIMESTAMP_FORMAT, Json,
     PathLike, VIDEO_URL_TEMPLATE,
@@ -34,8 +33,8 @@ from mtg.data.structs import ChannelData, VideoData
 from mtg.deck.arena import ArenaParser, LinesParser
 from mtg.deck.core import Deck, DeckParser
 from mtg.deck.scrapers.abc import (
-    DeckTagsContainerScraper, DecksJsonContainerScraper,
-    get_video_throttled_deck_scraper_types,
+    DeckScraper, DeckTagsContainerScraper, DeckUrlsContainerScraper, DecksJsonContainerScraper,
+    HybridContainerScraper,
 )
 from mtg.lib.common import Noop, find_longest_seqs, from_iterable, logging_disabled
 from mtg.lib.files import get_dir, sanitize_filename

@@ -237,7 +237,7 @@ class ScgDatabaseScraper(DeckUrlsContainerScraper):
         db_div = self._soup.find("div", id="deck-database")
         if db_div is None:
             raise ScrapingError("Deck database tag not found", scraper=type(self), url=self.url)
-        a_tags = [tag for tag in db_div.find_all("a", class_="dd-deck-link")]
+        a_tags = [tag for tag in db_div.find_all("a", class_="dd-deck-links")]
         if not a_tags:
             raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
         self._deck_urls = [tag.attrs["href"].strip() for tag in a_tags]

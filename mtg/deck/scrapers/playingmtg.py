@@ -11,18 +11,17 @@ import logging
 from collections.abc import Iterator
 from typing import override
 
-from mtg import DecksJsonContainerScraper
 from mtg.constants import Json
 from mtg.deck.abc import DeckJsonParser
 from mtg.deck.scrapers.abc import (
-    DEFAULT_THROTTLING, DeckScraper, HybridContainerScraper,
+    DEFAULT_THROTTLING, DeckScraper, DecksJsonContainerScraper, HybridContainerScraper,
 )
 from mtg.lib.scrape.core import (
     ScrapingError, fetch_json, get_path_segments, is_more_than_root_path, normalize_url,
     prepend_url, strip_url_query,
 )
 from mtg.lib.scrape.dynamic import Xpath
-from mtg.lib.time import date_from_unixtime
+from mtg.lib.time import date_from_unixtime, parse_date
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://playingmtg.com"
@@ -184,9 +183,6 @@ class PlayingMtgTournamentScraper(DecksJsonContainerScraper):
         ]
 
 
-# TODO
-# TODO: tags-based decklists scraping (only if PlayingMTG articles start to be regularly featured
-#  in YT videos)
 @HybridContainerScraper.registered
 class PlayingMtgArticleScraper(HybridContainerScraper):
     """Scraper of PlayingMTG article page.
@@ -218,6 +214,19 @@ class PlayingMtgArticleScraper(HybridContainerScraper):
         if any(f"playingmtg.com/{t}" in url.lower() for t in tokens):
             return False
         return is_more_than_root_path(url, "playingmtg.com")
+
+    @override
+    def _parse_input_for_metadata(self) -> None:
+        self._metadata["article"] = {}
+        if title_tag := self._soup.select_one("h1.page-title"):
+            self._metadata["article"]["title"] = title_tag.text.strip()
+        if author_tag := self._soup.find("a", {"rel": "author"}):
+            self._metadata["article"]["author"] = author_tag.find("span").text.strip()
+        if date_tag := self._soup.find("li", {"itemprop": "dateModified"}):
+            date_text = date_tag.find("time")["datetime"]
+            self._metadata["article"]["date"] = parse_date(date_text)
+        if not self._metadata["article"]:
+            del self._metadata["article"]
 
     @override
     def _parse_input_for_decks_data(self) -> None:
